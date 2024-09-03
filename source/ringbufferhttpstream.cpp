@@ -71,7 +71,7 @@ void RingBufferHttpStream::OnCompleteCallback(const happyhttp::Response* r)
 
 //this reads directly from the ringbuffer
 //with dst = NULL, this is actually seeking forward
-ITCM_CODE inline void RingBufferHttpStream::ReadFromBuffer(uint8_t* dst, int count)
+void RingBufferHttpStream::ReadFromBuffer(uint8_t* dst, int count)
 {
 	if(mRingBufferReadPointer + count <= mRingBuffer + RINGBUFFER_SIZE)//we can do it at once
 	{
@@ -93,7 +93,7 @@ ITCM_CODE inline void RingBufferHttpStream::ReadFromBuffer(uint8_t* dst, int cou
 }
 
 //this writes directly to the ringbuffer
-ITCM_CODE inline void RingBufferHttpStream::WriteToBuffer(uint8_t* src, int count)
+void RingBufferHttpStream::WriteToBuffer(uint8_t* src, int count)
 {
 	if(mRingBufferWritePointer + count <= mRingBuffer + RINGBUFFER_SIZE)//we can do it at once
 	{

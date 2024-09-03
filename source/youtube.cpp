@@ -58,12 +58,14 @@ static volatile char* videourl = NULL;
 // invoked to process response body data (may be called multiple times)
 void OnData( const happyhttp::Response* r, void* userdata, const unsigned char* data, int n )
 {
-	if(count + n < maxCount)
-	{
-		memcpy(pResponse, data, n);
-		pResponse += n;
-		count += n;
+	if (count + n >= maxCount - 1) {   // -1 pour le '\0'
+		n = maxCount - 1 - count;
 	}
+	memcpy(pResponse, data, n);
+	pResponse += n;
+	count += n;
+	*pResponse = '\0';
+	iprintf("count=%d n=%d max=%d\n", count, n, maxCount);
 }
 
 char* YT_GetVideoInfo(const char* id)
@@ -78,7 +80,8 @@ retry:
 	iprintf(resultUrl);
 	happyhttp::Connection mConnection("www.youtube.com", 80);
 	maxCount = 64 * 1024;
-	response = (uint8_t*)malloc(maxCount);
+	response = (uint8_t*)malloc(maxCount + 1);
+	memset(response, 0, maxCount + 1);
 	pResponse = response;
 	count = 0;
 	videourl = NULL;
@@ -295,7 +298,8 @@ char* YT_Search_GetURL(char* query, int resultsPerPage, char* pageToken)
 YT_SearchListResponse* YT_Search_ParseResponse(char* response)
 {
 	Document document;
-	document.ParseInsitu(response);
+	pResponse[0] = '\0';
+	document.Parse(response);
 	YT_SearchListResponse* result = (YT_SearchListResponse*)malloc(sizeof(YT_SearchListResponse));
 	memset(result, 0, sizeof(YT_SearchListResponse));
 	if(document.HasMember("prevPageToken"))

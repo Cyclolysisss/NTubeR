@@ -36,7 +36,8 @@ CFLAGS	:=	-g -Wall -O2 \
 		-ffast-math \
 		$(ARCH)
 
-CFLAGS	+=	$(INCLUDE) -DARM9
+DEBUG = 1
+CFLAGS	+=	$(INCLUDE) -DARM9 -g -O0
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
 
 ASFLAGS	:=	-g $(ARCH) -march=armv5te -mtune=arm946e-s $(INCLUDE)
